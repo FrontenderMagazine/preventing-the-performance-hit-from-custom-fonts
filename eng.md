@@ -1,10 +1,15 @@
 # Preventing the Performance Hit from Custom Fonts
 
-The issue is 1) custom fonts are awesome and we want to use them 2) custom fonts slow down our pages by being large additional resources. Dealing with this has been in the air recently so I thought I'd round up some of the ideas and add thoughts of my own.
+The issue is 1) custom fonts are awesome and we want to use them 2) custom fonts
+slow down our pages by being large additional resources. Dealing with this has
+been in the air recently so I thought I'd round up some of the ideas and add
+thoughts of my own.
 
 ## Only load on large screens
 
-The first idea I saw was Dave Rupert's tests on only loading @font-face on large screens. Turns out if you use @font-face but don't ever apply that font-family, the font won't be downloaded. Pretty smart, browsers. [Dave's demo][1].
+The first idea I saw was Dave Rupert's tests on only loading @font-face on large
+screens. Turns out if you use @font-face but don't ever apply that font-family,
+the font won't be downloaded. Pretty smart, browsers. [Dave's demo][1].
 
 **CSS**
 
@@ -24,15 +29,27 @@ The first idea I saw was Dave Rupert's tests on only loading @font-face on large
       }
     }
 
-Jordan Moore has an article on the Typekit Blog ["Fallback Fonts on Mobile Devices"][2] that uses the same thinking.
+Jordan Moore has an article on the Typekit Blog ["Fallback Fonts on Mobile
+Devices"][2] that uses the same thinking.
 
-> I applied this thinking to my own project by producing two separate font kits: a “full” font kit containing all the typographical styles I originally intended to use, and a “light” kit containing fewer fonts (and, consequently, weighing significantly less). I loaded the kits via JavaScript depending on the width of the user’s screen, with the value based on the smallest breakpoint.
+> I applied this thinking to my own project by producing two separate font kits: 
+a “full” font kit containing all the typographical styles I originally intended 
+to use, and a “light” kit containing fewer fonts (and, consequently, weighing 
+significantly less). I loaded the kits via JavaScript depending on the width of 
+the user’s screen, with the value based on the smallest breakpoint.
 
-With Dave's technique, you wouldn't have to worry about FOUT (Flash of Unstyled Text) since it's using native @font-face and most browsers have dealt with that. Jordan's technique would be more subject to FOUT I would think, having to load the fonts after a test, but you could fix that how you always fix that with Typekit: [using `visibility: hidden` while the fonts load][3].
+With Dave's technique, you wouldn't have to worry about FOUT (Flash of Unstyled
+Text) since it's using native @font-face and most browsers have dealt with that.
+Jordan's technique would be more subject to FOUT I would think, having to load
+the fonts after a test, but you could fix that how you always fix that with
+Typekit: [using `visibility: hidden` while the fonts load][3].
 
 ## Ajax in the fonts
 
-If you're biggest concern is slowing down the render time (not necessarily the fully loaded page time), you could Ajax in the stylesheet that contains the @font-face stuff after document ready. Omar Al Zabir [has a tutorial on this][4]. (thx [Kevin][5])
+If you're biggest concern is slowing down the render time (not necessarily the
+fully loaded page time), you could Ajax in the stylesheet that contains the
+@font-face stuff after document ready. Omar Al Zabir [has a tutorial on
+this][4]. (thx [Kevin][5])
 
 **JavaScript**
 
@@ -51,11 +68,16 @@ If you're biggest concern is slowing down the render time (not necessarily the f
       });
     });
 
-Making sure the font files have far expires headers is important too. In order to beat FOUT here, you would add a class to the `<html>` element (immediately with JavaScript) that you would use to `visibility: hidden` what you want to hide until the fonts load, and remove it in the Ajax success callback.
+Making sure the font files have far expires headers is important too. In order
+to beat FOUT here, you would add a class to the `<html>` element (immediately
+with JavaScript) that you would use to `visibility: hidden` what you want to
+hide until the fonts load, and remove it in the Ajax success callback.
 
 ## Lazy load the fonts, load on subsequent page loads after cached
 
-Extending that idea, perhaps we could only display custom fonts if we were pretty darn sure the font files were cached. On the back-end, we check for a cookie (that we'll set ourselves later) that indicateds the fonts are cached.
+Extending that idea, perhaps we could only display custom fonts if we were
+pretty darn sure the font files were cached. On the back-end, we check for a
+cookie (that we'll set ourselves later) that indicateds the fonts are cached.
 
 **PHP**
 
@@ -65,7 +87,8 @@ Extending that idea, perhaps we could only display custom fonts if we were prett
       echo "<link rel='stylesheet' href='/URL/TO/fonts.css'>";
     }
 
-On the front-end, we'll do the exact opposite. If the cookie isn't there, we'll lazy-load those fonts and then set the cookie.
+On the front-end, we'll do the exact opposite. If the cookie isn't there, we'll
+lazy-load those fonts and then set the cookie.
 
 **JavaScript**
 
@@ -91,36 +114,52 @@ On the front-end, we'll do the exact opposite. If the cookie isn't there, we'll 
   
     }
 
-Not foolproof, since that cookie isn't 100% proof that font is cached. But if you set it to expire in like one day it stands a decent chance. No FOUT here though, since it either doesn't load the fonts at all or does it natively with @font-face. If you don't mind FOUT (i.e. you want to show your custom font on that first page load no matter what), you could create the `<link>` and insert the fonts stylesheet instead of just requesting the fonts.
+Not foolproof, since that cookie isn't 100% proof that font is cached. But if
+you set it to expire in like one day it stands a decent chance. No FOUT here
+though, since it either doesn't load the fonts at all or does it natively with
+@font-face. If you don't mind FOUT (i.e. you want to show your custom font on
+that first page load no matter what), you could create the `<link>` and insert
+the fonts stylesheet instead of just requesting the fonts.
 
-Another alternative would be to place a data URI version of the font into localStorage and yank it out when you need it. You would create a `<style>` element, put the @font-face code in that using the data URI version of the font, and inject that. Apparently The Guardian is trying that.
+Another alternative would be to place a data URI version of the font into
+localStorage and yank it out when you need it. You would create a `<style>`
+element, put the @font-face code in that using the data URI version of the font,
+and inject that. Apparently The Guardian is trying that.
 
-TWEET
+<blockquote class="twitter-tweet"><p>@<a href="https://twitter.com/scottjehl">scottjehl</a> Related to the cache discussion: the Guardian is playing with localStorage. <a href="https://t.co/s9kZm8r6JT" title="https://github.com/guardian/frontend/blob/master/common/app/assets/javascripts/modules/fonts.js#L88">github.com/guardian/front…</a> @<a href="https://twitter.com/davatron5000">davatron5000</a> @<a href="https://twitter.com/chriscoyier">chriscoyier</a></p>
+<p>&mdash; Tim Kadlec (@tkadlec) <a href="https://twitter.com/tkadlec/status/324603294251094017">April 17, 2013</a></p></blockquote>
 
 Fair warning, localStorage can be slower than cache.
 
-TWEET
+<blockquote class="twitter-tweet"><p>@<a href="https://twitter.com/tkadlec">tkadlec</a> @<a href="https://twitter.com/scottjehl">scottjehl</a> @<a href="https://twitter.com/davatron5000">davatron5000</a> @<a href="https://twitter.com/chriscoyier">chriscoyier</a> local storage works if you absolutely need it, but can be slower to read than browser cache</p>
+<p>&mdash; Addy Osmani (@addyosmani) <a href="https://twitter.com/addyosmani/status/324610077287907328">April 17, 2013</a></p></blockquote>
 
-A possible advantage to using JavaScript fanciness is knowing which font versions you need.
+A possible advantage to using JavaScript fanciness is knowing which font
+versions you need.
 
-TWEET
+<blockquote class="twitter-tweet"><p>@<a href="https://twitter.com/davatron5000">davatron5000</a> @<a href="https://twitter.com/sturobson">sturobson</a> @<a href="https://twitter.com/chriscoyier">chriscoyier</a> We're loading data uri'd fonts w/ insertBefore. Defaulting to WOFF.css, using TTF or EOT if android/ie</p>
+<p>&mdash; Scott Jehl (@scottjehl) <a href="https://twitter.com/scottjehl/status/324597243044831233">April 17, 2013</a></p></blockquote>
 
-And how:
-
-TWEET
+[And how][6]
 
 ## The Future
 
-This all gets better the more information we can get our hands on regarding the clients situation.
+This all gets better the more information we can get our hands on regarding the
+clients situation.
 
-What kind of bandwidth and latency are they getting? This is pretty hard (and heavy) to test and not super reliable even when we can. Perhaps the [network information API][6] will help someday.
+What kind of bandwidth and latency are they getting? This is pretty hard (and
+heavy) to test and not super reliable even when we can. Perhaps the [network
+information API][7] will help someday.
 
-What is their screen size? What are the capabilities of the browser? We can test this stuff in JavaScript, but what if it would be better to know server side? Perhaps [Client-Hints][7] will help someday.
+What is their screen size? What are the capabilities of the browser? We can test
+this stuff in JavaScript, but what if it would be better to know server side?
+Perhaps [Client-Hints][8] will help someday.
 
 [1]: http://codepen.io/davatron5000/pen/nrfGA
 [2]: http://blog.typekit.com/2013/04/17/fallback-fonts-on-mobile-devices/
 [3]: http://blog.typekit.com/2010/10/29/font-events-controlling-the-fout/
 [4]: http://www.codeproject.com/Articles/462209/Using-custom-font-without-slowing-down-page-load
 [5]: https://twitter.com/ilikevests/status/324593491411873792
-[6]: http://www.w3.org/TR/netinfo-api/#the-networkinformation-interface
-[7]: https://github.com/igrigorik/http-client-hints
+[6]: https://gist.github.com/scottjehl/5406853
+[7]: http://www.w3.org/TR/netinfo-api/#the-networkinformation-interface
+[8]: https://github.com/igrigorik/http-client-hints
