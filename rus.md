@@ -19,7 +19,9 @@
 		font-family: 'Dr Sugiyama';
 		font-style: normal;
 		font-weight: 400;
-	 	src: local("Dr Sugiyama Regular"), local("DrSugiyama-Regular"), url(http://themes.googleusercontent.com/static/fonts/drsugiyama/v2/rq_8251Ifx6dE1Mq7bUM6brIa-7acMAeDBVuclsi6Gc.woff) format("woff");
+	 	src: 	local("Dr Sugiyama Regular"),
+	 			local("DrSugiyama-Regular"),
+	 			url(http://themes.googleusercontent.com/static/fonts/drsugiyama/v2/rq_8251Ifx6dE1Mq7bUM6brIa-7acMAeDBVuclsi6Gc.woff) format("woff");
 	}
 
 	body {
