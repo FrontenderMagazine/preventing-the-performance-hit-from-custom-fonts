@@ -146,13 +146,13 @@ Typekit: [применив `visibility: hidden` и убрав его когда 
 @scottjehl
 
 > @scottjehl По теме кеша: the Guardian экспериментирует с localStorage. 
-https://github.com/guardian/frontend/blob/master/common/app/assets/javascripts/modules/fonts.js#L88 
+[https://github.com/guardian/frontend/blob/master/common/app/assets/javascripts/modules/fonts.js#L88][9] 
 … @davatron5000 @chriscoyier -  Tim Kadlec @tkadlec
 
 Верно подмечено, localStorage может быть более медленным, чем кэширование.
 
 > @scottjehl По теме кеша: the Guardian экспериментирует с localStorage. 
-https://github.com/guardian/frontend/blob/master/common/app/assets/javascripts/modules/fonts.js#L88 
+[https://github.com/guardian/frontend/blob/master/common/app/assets/javascripts/modules/fonts.js#L88][9]
 … @davatron5000 @chriscoyier -  Tim Kadlec @tkadlec
 
 > @tkadlec @scottjehl @davatron5000 @chriscoyier вариант с локальным хранилищем
@@ -192,3 +192,4 @@ EOT. -  Scott Jehl @scottjehl
 [6]: https://gist.github.com/scottjehl/5406853
 [7]: http://www.w3.org/TR/netinfo-api/#the-networkinformation-interface
 [8]: https://github.com/igrigorik/http-client-hints
+[9]: https://github.com/guardian/frontend/blob/master/common/app/assets/javascripts/modules/fonts.js#L88
